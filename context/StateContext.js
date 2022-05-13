@@ -6,9 +6,12 @@ const Context = createContext();
 export const StateContext = ({children}) => {
    const [showCart, setShowCart] = useState(false);
    const [cartItems, setCartItems] = useState([])
-   const [totalPrice, setTotalPrice] = useState()
-   const [totalQuantities, setTotalQuantities] = useState()
+   const [totalPrice, setTotalPrice] = useState(0)
+   const [totalQuantities, setTotalQuantities] = useState(0)
    const [qty, setQty] = useState(1)
+
+   let foundProduct;
+   let index;
 
    const incQty = () => {
       setQty((prevQty) => prevQty + 1)
@@ -18,6 +21,17 @@ export const StateContext = ({children}) => {
          if (prevQty - 1 < 1) return 1;
          return prevQty - 1
       })
+   }
+
+   const toggleCartItemQuantity = (id, value) => {
+      foundProduct = cartItems.find((item) => item._id === id)
+      index = cartItems.findIndex((product) => product._id === id)
+
+      if (value === "inc") {
+
+      } else if (value === "dec") {
+
+      }
    }
    const onAdd = (product, quantity) => {
       const checkProductInCart = cartItems.find((item) => item._id === product._id)
@@ -36,7 +50,8 @@ export const StateContext = ({children}) => {
    }
 
    return (
-      <Context.Provider value={{cartItems, totalPrice, totalQuantities, showCart, qty, incQty, decQty, onAdd}}>
+      <Context.Provider
+         value={{cartItems, totalPrice, totalQuantities, showCart, setShowCart, qty, incQty, decQty, onAdd}}>
          {children}
       </Context.Provider>
    )
