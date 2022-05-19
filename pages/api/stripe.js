@@ -10,33 +10,32 @@ export default async function handler(req, res) {
             payment_method_types: ['card'],
             billing_address_collection: 'auto',
             shipping_options: [
-               {shipping_rate: "shr_1L17JPDInq6vpjl5dv4XhsvG"},
-               {shipping_rate: "shr_1L17LwDInq6vpjl5F7Uyk9QO"}
+               {shipping_rate: "shr_1L19l7DInq6vpjl5aHp4JTdo"}
             ],
-            line_items: req.body.cartItems.map((item) => {
-               const img = item.image[0].asset._ref
-               const newImg = img.replace("image-", "https://cdn.sanity.io/images/jgp3z8s3/production/")
-                  .replace("-webp", ".webp")
+            line_items: req.body.map((item) => {
+               const img = item.image[0].asset._ref;
+               const newImage = img.replace('image-', 'https://cdn.sanity.io/images/jgp3z8s3/production/').replace('-webp', '.webp');
                return {
                   price_data: {
-                     currency: "usd",
+                     currency: 'usd',
                      product_data: {
                         name: item.name,
-                        images: [newImg]
+                        images: [newImage],
                      },
                      unit_amount: item.price * 100,
-                     adjustable_quantity: {
-                        enabled: true,
-                        minimum: 1
-                     },
-                     quantity: item.quantity
-                  }
+                  },
+                  adjustable_quantity: {
+                     enabled: true,
+                     minimum: 1,
+                  },
+                  quantity: item.quantity
                }
             }),
-
-            success_url: `${req.headers.origin}/?success=true`,
-            cancel_url: `${req.headers.origin}/?canceled=true`,
+            success_url: `${req.headers.origin}/success`,
+            cancel_url: `${req.headers.origin}/canceled`,
          }
+
+         // Create Checkout Sessions from body params.
          const session = await stripe.checkout.sessions.create(params);
 
          res.status(200).json(session);
